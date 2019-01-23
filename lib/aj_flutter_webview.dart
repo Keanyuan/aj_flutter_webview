@@ -1,10 +1,8 @@
 library aj_flutter_webview;
 
+export 'src/base.dart';
 
-
-import 'src/base.dart';
-
-import 'src/aj_webview_scaffold.dart';
+export 'src/aj_webview_scaffold.dart';
 
 
 

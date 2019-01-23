@@ -134,23 +134,21 @@ class _AJWebviewScaffoldState extends State<AJWebviewScaffold> {
   }
 }
 
-
-
 class _WebviewPlaceholder extends SingleChildRenderObjectWidget {
-
   const _WebviewPlaceholder({
     Key key,
     @required this.onRectChanged,
     Widget child,
-  }): super(key: key, child: child);
-
-  @override
-  RenderObject createRenderObject(BuildContext context) {
-    return _WebviewPlaceholderRender(onRectChanged: onRectChanged);
-  }
+  }) : super(key: key, child: child);
 
   final ValueChanged<Rect> onRectChanged;
 
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return _WebviewPlaceholderRender(
+      onRectChanged: onRectChanged,
+    );
+  }
 
   @override
   void updateRenderObject(BuildContext context, _WebviewPlaceholderRender renderObject) {
@@ -159,7 +157,6 @@ class _WebviewPlaceholder extends SingleChildRenderObjectWidget {
 }
 
 class _WebviewPlaceholderRender extends RenderProxyBox {
-
   _WebviewPlaceholderRender({
     RenderBox child,
     ValueChanged<Rect> onRectChanged,
@@ -171,7 +168,7 @@ class _WebviewPlaceholderRender extends RenderProxyBox {
 
   Rect get rect => _rect;
 
-  set onRectChanged(ValueChanged<Rect> callback){
+  set onRectChanged(ValueChanged<Rect> callback) {
     if (callback != _callback) {
       _callback = callback;
       notifyRect();

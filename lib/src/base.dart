@@ -126,6 +126,19 @@ class AJFlutterWebviewPlugin {
     return res;
   }
 
+  Future<bool> canGoBack() async {
+    final res = await _channel.invokeMethod('canGoBack');
+    Map r = res;
+    print(r);
+    return r["canGoBack"] == "1" ? true : false;
+  }
+
+  Future<bool> canForward() async {
+    final res = await _channel.invokeMethod('canForward');
+    Map r = res;
+    return r["canForward"] == "1" ? true : false;
+  }
+
   ///关闭webview
   Future<Null> close() async => await _channel.invokeMethod('close');
   ///刷新webview

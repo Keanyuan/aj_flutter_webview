@@ -32,6 +32,7 @@ static NSString *const CHANNEL_NAME = @"aj_flutter_webview";
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"launch" isEqualToString:call.method]) { //构建
+        NSLog(@"launch");
         if (!self.webview){
             [self initWebview: call];
         } else {
@@ -66,6 +67,10 @@ static NSString *const CHANNEL_NAME = @"aj_flutter_webview";
     } else if ([@"back" isEqualToString:call.method]) { //返回
         [self back];
         result(nil);
+    }else if ([@"canGoBack" isEqualToString:call.method]) { //是否可以返回
+        result(@{@"canGoBack" : [self canback] ? @"1" : @"0"});
+    }else if ([@"canForward" isEqualToString:call.method]) { //是否可以前进
+        result(@{@"canForward" : [self canforward] ? @"1" : @"0"});
     } else if ([@"forward" isEqualToString:call.method]) { //前进
         [self forward];
         result(nil);
@@ -217,6 +222,16 @@ static NSString *const CHANNEL_NAME = @"aj_flutter_webview";
     if (self.webview != nil) {
         [self.webview goBack];
     }
+}
+
+//是否可以返回
+- (BOOL)canback {
+    return self.webview.canGoBack;
+}
+
+//是否可以下一步
+- (BOOL)canforward {
+    return self.webview.canGoForward;
 }
 
 //前进

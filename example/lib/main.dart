@@ -12,44 +12,50 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String _url = 'http://www.baidu.com';
+//定义webview插件
+  final flutterWebViewPlugin = new AJFlutterWebviewPlugin();
+
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await AjFlutterWebview.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
+    flutterWebViewPlugin.onStateChanged.listen((s){
+      print(s.type);
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
+      home: AJWebviewScaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          leading: FlatButton(onPressed: (){
+            flutterWebViewPlugin.canGoBack().then((v){
+              print(v);
+              if(v){
+                flutterWebViewPlugin.goBack();
+              }
+            });
+            
+          }, child: Icon(Icons.arrow_back_ios, color: Colors.white,)),
+          title: Text("title"),
+          actions: <Widget>[
+            FlatButton(onPressed: (){
+              flutterWebViewPlugin.canForward().then((v){
+                if(v){
+                  flutterWebViewPlugin.goForward();
+                }
+              });
+            }, child: Icon(Icons.arrow_forward_ios, color: Colors.white,))
+          ],
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        url: _url,
+        withZoom: false,
+        withLocalStorage: true,
+        withJavascript: true,
+        scrollBar: true,
       ),
     );
   }
