@@ -32,12 +32,10 @@ static NSString *const CHANNEL_NAME = @"aj_flutter_webview";
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"launch" isEqualToString:call.method]) { //构建
-        NSLog(@"launch");
-        if (!self.webview){
-            [self initWebview: call];
-        } else {
+        if (!self.webview)
+            [self initWebview:call];
+        else
             [self navigate:call];
-        }
         result(nil);
     } else if ([@"close" isEqualToString:call.method]) { //关闭webview
         [self closeWebView];
@@ -134,11 +132,12 @@ static NSString *const CHANNEL_NAME = @"aj_flutter_webview";
 }
 //跳转webview
 - (void)navigate:(FlutterMethodCall*)call {
-    if(self.webview != nil){
+    if (self.webview != nil) {
         NSString *url = call.arguments[@"url"];
         NSNumber *withLocalUrl = call.arguments[@"withLocalUrl"];
-        if([withLocalUrl boolValue]){
+        if ( [withLocalUrl boolValue]) {
             NSURL *htmlUrl = [NSURL fileURLWithPath:url isDirectory:false];
+            NSLog(@"%@", url);
             if (@available(iOS 9.0, *)) {
                 //允许对URL的读访问
                 [self.webview loadFileURL:htmlUrl allowingReadAccessToURL:htmlUrl];
@@ -148,9 +147,11 @@ static NSString *const CHANNEL_NAME = @"aj_flutter_webview";
         } else {
             NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
             NSDictionary *headers = call.arguments[@"headers"];
-            if(headers == nil){
+            
+            if (headers != nil) {
                 [request setAllHTTPHeaderFields:headers];
             }
+            
             [self.webview loadRequest:request];
         }
     }
@@ -162,7 +163,7 @@ static NSString *const CHANNEL_NAME = @"aj_flutter_webview";
         [self.webview stopLoading];
         [self.webview removeFromSuperview];
         self.webview.navigationDelegate = nil;
-        
+        self.webview = nil;
         //flutter 销毁
         [channel invokeMethod:@"onDestroy" arguments:nil];
     }
