@@ -213,13 +213,13 @@
         return false;
     }
     if([withLocalUrl boolValue]){
-        NSURL *htmlUrl = [NSURL fileURLWithPath:initialUrl isDirectory:false];
+        NSURL *htmlUrl = [NSURL fileURLWithPath:initialUrl];
         if (@available(iOS 9.0, *)) {
             [_webView loadFileURL:htmlUrl allowingReadAccessToURL:htmlUrl];
         } else {
+            // Fallback on earlier versions
             @throw @"not available on version earlier than ios 9.0";
         }
-
     } else {
 
         NSURL* nsUrl = [NSURL URLWithString:initialUrl];
@@ -236,10 +236,11 @@
     if (url.length == 0) {
         return false;
     }
-    NSURL *htmlUrl = [NSURL fileURLWithPath:url isDirectory:false];
+    NSURL *htmlUrl = [NSURL fileURLWithPath:url];
     if (@available(iOS 9.0, *)) {
         [_webView loadFileURL:htmlUrl allowingReadAccessToURL:htmlUrl];
     } else {
+        // Fallback on earlier versions
         @throw @"not available on version earlier than ios 9.0";
     }
     return true;
@@ -273,14 +274,8 @@
         [_channel invokeMethod:@"onUrlChanged" arguments:data];
         
     }
-    
-    if([webView.URL.scheme isEqualToString:@"http"] ||
-       [webView.URL.scheme isEqualToString:@"https"] ||
-       [webView.URL.scheme isEqualToString:@"about"]){
-        decisionHandler(WKNavigationActionPolicyAllow);
-    } else {
-        decisionHandler(WKNavigationActionPolicyCancel);
-    }
+    decisionHandler(WKNavigationActionPolicyAllow);
+
     
 }
 
@@ -292,7 +287,6 @@
 
 // 开始加载数据失败时，会回调
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    NSLog(@"aaa");
     [_channel invokeMethod:@"onState" arguments:@{@"type": @"loadFaild", @"url": webView.URL.absoluteString}];
     [_channel invokeMethod:@"onHttpError" arguments:@{@"code": [NSString stringWithFormat:@"%ld", error.code], @"error": error.localizedDescription}];
 }

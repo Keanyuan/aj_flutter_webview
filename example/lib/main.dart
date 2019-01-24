@@ -14,10 +14,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   final Completer<WebViewController> _controller = Completer<WebViewController>();
+  static const platform = const MethodChannel('flutter_get_html');
 
+  String localHtml = "";
   @override
   void initState() {
     super.initState();
+    _getPlatformVersion();
   _controller.future.then((controller){
     print("controller");
     controller.onStateChanged.listen((state){
@@ -28,13 +31,40 @@ class _MyAppState extends State<MyApp> {
       print(error.code);
     });
 
+    controller.onUrlChanged.listen((url){
+      print(url);
+    });
+
 
   });
+
   }
 
+  //调用对应方法
+  _getPlatformVersion() async {
+    String localHtmlData;
+    try {
+      //invoke Method 获取定义调用方法名
+      final localHtml = await platform.invokeMethod( 'getLocalHtml' );
+      print(localHtml);
+
+      localHtmlData = '$localHtml';
+    } on PlatformException catch (e) {
+      print( "错误 $e" );
+    }
+    setState( () {
+      localHtml = localHtmlData;
+    } );
+  }
 
   @override
   Widget build(BuildContext context) {
+//    if(localHtml.length == 0){
+//      return MaterialApp(home: Scaffold(
+//        appBar: AppBar(title: Text("hhh")),
+//        body: CircularProgressIndicator(),
+//      ),);
+//    }
 
     return MaterialApp(home: Scaffold(
       appBar: AppBar(
@@ -57,7 +87,15 @@ class _MyAppState extends State<MyApp> {
               icon: Icon(Icons.arrow_forward_ios),
               onPressed: (){
                 _controller.future.then((controller){
-                  controller.loadUrl("https://www.taobao.com");
+//                  controller.loadUrl("https://www.taobao.com");
+                print(localHtml);
+//                if(localHtml.length > 0){
+//                  controller.loadLoacalUrl(localHtml);
+//
+//                }
+                  controller.loadLoacalUrl("file:///android_asset/html/NotFindPage.html");
+
+                  //  file:///android_asset/html/NotFindPage.html
 
 
                 });
