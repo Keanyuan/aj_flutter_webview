@@ -212,6 +212,19 @@ class WebViewController {
     return _channel.invokeMethod("reload");
   }
 
+  //释放资源
+  Future<void> dispose() {
+    _onUrlChanged.close();
+    _onStateChanged.close();
+    _onHttpError.close();
+  }
+
+
+
+
+
+
+
   Future<String> evaluateJavascript(String javascriptString) async {
     if (_settings.javascriptMode == JavascriptMode.disabled) {
       throw FlutterError(

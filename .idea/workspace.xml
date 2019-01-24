@@ -7,16 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bd769c61-d7d5-4805-a000-a35703a11cc0" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/example/android/app/src/main/assets/html/NotFindPage.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/android/app/src/main/assets/html/notfind.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/ios/Runner/html/NotFindPage.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/ios/Runner/html/notfind.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aj_flutter_webview.iml" beforeDir="false" afterPath="$PROJECT_DIR$/aj_flutter_webview.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/ios/Runner/AppDelegate.m" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/Runner/AppDelegate.m" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Classes/FlutterWebView.m" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Classes/FlutterWebView.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/aj_webview_scaffold.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/aj_webview_scaffold.dart" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.dart_tool/" />
     <ignored path="$PROJECT_DIR$/.idea/" />
@@ -36,8 +28,8 @@
       <file leaf-file-name="aj_flutter_webview.dart" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/aj_flutter_webview.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" selection-start-line="3" selection-end-line="3" />
+            <state relative-caret-position="60">
+              <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
             </state>
           </provider>
         </entry>
@@ -45,8 +37,8 @@
       <file leaf-file-name="main.dart" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/example/lib/main.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="34" column="17" selection-start-line="34" selection-start-column="17" selection-end-line="34" selection-end-column="17" />
+            <state relative-caret-position="161">
+              <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
             </state>
           </provider>
         </entry>
@@ -88,8 +80,8 @@
       <file leaf-file-name="aj_webview_scaffold.dart" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/src/aj_webview_scaffold.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-823">
-              <caret line="183" column="28" selection-start-line="183" selection-start-column="15" selection-end-line="183" selection-end-column="28" />
+            <state relative-caret-position="205">
+              <caret line="215" column="22" selection-start-line="215" selection-start-column="15" selection-end-line="215" selection-end-column="22" />
               <folding>
                 <element signature="e#2#22#0" expanded="true" />
               </folding>
@@ -143,8 +135,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="192" />
-    <option name="y" value="48" />
+    <option name="x" value="103" />
+    <option name="y" value="23" />
     <option name="width" value="1350" />
     <option name="height" value="837" />
   </component>
@@ -164,42 +156,13 @@
             <path>
               <item name="aj_flutter_webview" type="b2602c69:ProjectViewProjectNode" />
               <item name="aj_flutter_webview" type="462c0819:PsiDirectoryNode" />
-              <item name="android" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="aj_flutter_webview" type="b2602c69:ProjectViewProjectNode" />
-              <item name="aj_flutter_webview" type="462c0819:PsiDirectoryNode" />
               <item name="example" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="aj_flutter_webview" type="b2602c69:ProjectViewProjectNode" />
               <item name="aj_flutter_webview" type="462c0819:PsiDirectoryNode" />
               <item name="example" type="462c0819:PsiDirectoryNode" />
-              <item name="android" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="aj_flutter_webview" type="b2602c69:ProjectViewProjectNode" />
-              <item name="aj_flutter_webview" type="462c0819:PsiDirectoryNode" />
-              <item name="example" type="462c0819:PsiDirectoryNode" />
-              <item name="android" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="aj_flutter_webview" type="b2602c69:ProjectViewProjectNode" />
-              <item name="aj_flutter_webview" type="462c0819:PsiDirectoryNode" />
-              <item name="example" type="462c0819:PsiDirectoryNode" />
-              <item name="android" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="aj_flutter_webview" type="b2602c69:ProjectViewProjectNode" />
-              <item name="aj_flutter_webview" type="462c0819:PsiDirectoryNode" />
-              <item name="example" type="462c0819:PsiDirectoryNode" />
-              <item name="android" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="aj_flutter_webview" type="b2602c69:ProjectViewProjectNode" />
@@ -312,7 +275,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="192" y="48" width="1350" height="837" extended-state="0" />
+    <frame x="103" y="23" width="1350" height="837" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="Android Profiler" order="7" show_stripe_button="false" />
@@ -332,7 +295,7 @@
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="bottom" id="Flutter Performance" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.49865228" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.12803234" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Captures" order="2" />
@@ -653,23 +616,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/aj_flutter_webview.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/src/aj_webview_scaffold.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-823">
-          <caret line="183" column="28" selection-start-line="183" selection-start-column="15" selection-end-line="183" selection-end-column="28" />
-          <folding>
-            <element signature="e#2#22#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/android/aj_flutter_webview.iml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -677,10 +623,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/aj_flutter_webview.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/aj_webview_scaffold.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="215" column="22" selection-start-line="215" selection-start-column="15" selection-end-line="215" selection-end-column="22" />
+          <folding>
+            <element signature="e#2#22#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/example/lib/main.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="34" column="17" selection-start-line="34" selection-start-column="17" selection-end-line="34" selection-end-column="17" />
+        <state relative-caret-position="161">
+          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
         </state>
       </provider>
     </entry>
