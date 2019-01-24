@@ -2,6 +2,7 @@ package com.plus.anji.ajflutterwebview;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -20,7 +21,7 @@ public class BrowserClient extends WebViewClient {
         super();
     }
 
-    //开始加载
+    //开始加载 开始加载页面时回调，一次Frame加载对应一次回调
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
@@ -28,35 +29,40 @@ public class BrowserClient extends WebViewClient {
         Map<String, Object> data = new HashMap<>();
         data.put("url", url);
         data.put("type", "startLoad");
-        AjFlutterWebviewPlugin.channel.invokeMethod("onState", data);
+        FlutterWebView.methodChannel.invokeMethod("onState", data);
     }
 
+    //完成加载页面时回调，一次Frame加载对应一次回调。
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
 
         Map<String, Object> data = new HashMap<>();
         data.put("url", url);
-        AjFlutterWebviewPlugin.channel.invokeMethod("onUrlChanged", data);
+        FlutterWebView.methodChannel.invokeMethod("onUrlChanged", data);
         data.put("type", "finishLoad");
-        AjFlutterWebviewPlugin.channel.invokeMethod("onState", data);
+        FlutterWebView.methodChannel.invokeMethod("onState", data);
     }
 
+
+
+    //WebView 访问 url 出错。
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
         Map<String, Object> data = new HashMap<>();
         data.put("url", request.getUrl().toString());
         data.put("code", Integer.toString(error.getErrorCode()));
-        AjFlutterWebviewPlugin.channel.invokeMethod("onHttpError", data);
+        FlutterWebView.methodChannel.invokeMethod("onHttpError", data);
     }
 
     @Override
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
         super.onReceivedHttpError(view, request, errorResponse);
+        Log.d("onHttpError", "onReceivedHttpError: ");
         Map<String, Object> data = new HashMap<>();
         data.put("url", request.getUrl().toString());
         data.put("code", Integer.toString(errorResponse.getStatusCode()));
-        AjFlutterWebviewPlugin.channel.invokeMethod("onHttpError", data);
+        FlutterWebView.methodChannel.invokeMethod("onHttpError", data);
     }
 }

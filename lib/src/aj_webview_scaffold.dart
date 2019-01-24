@@ -2,192 +2,303 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
-
-import 'base.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
-class AJWebviewScaffold extends StatefulWidget {
+typedef void WebViewCreatedCallback(WebViewController controller);
 
+enum JavascriptMode {
+  /// 禁用Javascrip
+  disabled,
 
-  const AJWebviewScaffold({
-    Key key,
-    this.appBar,
-    @required this.url,
-    this.headers,
-    this.withJavascript,
-    this.clearCache,
-    this.clearCookies,
-    this.enableAppScheme,
-    this.userAgent,
-    this.primary = true,
-    this.persistentFooterButtons,
-    this.bottomNavigationBar,
-    this.withZoom,
-    this.withLocalStorage,
-    this.withLocalUrl,
-    this.scrollBar,
-    this.supportMultipleWindows,
-    this.appCacheEnabled,
-    this.hidden = false,
-    this.initialChild,
-    this.allowFileURLs,
-  }) : super(key: key);
-
-  final PreferredSizeWidget appBar;
-  final String url;
-  final Map<String, String> headers;
-  final bool withJavascript;
-  final bool clearCache;
-  final bool clearCookies;
-  final bool enableAppScheme;
-  final String userAgent;
-  final bool primary;
-  final List<Widget> persistentFooterButtons;
-  final Widget bottomNavigationBar;
-  final bool withZoom;
-  final bool withLocalStorage;
-  final bool withLocalUrl;
-  final bool scrollBar;
-  final bool supportMultipleWindows;
-  final bool appCacheEnabled;
-  final bool hidden;
-  final Widget initialChild;
-  final bool allowFileURLs;
-
-  @override
-  _AJWebviewScaffoldState createState() => _AJWebviewScaffoldState();
+  /// 不禁用Javascrip.
+  unrestricted,
 }
 
-class _AJWebviewScaffoldState extends State<AJWebviewScaffold> {
-  final webviewReference = AJFlutterWebviewPlugin();
-  Rect _rect;
-  Timer _resizeTimer;
-  StreamSubscription<WebViewStateChanged> _onStateChanged;
-
+class AJWebview extends StatefulWidget {
   @override
-  void initState() {
-    super.initState();
-    webviewReference.close();
-
-    if (widget.hidden) {
-      _onStateChanged = webviewReference.onStateChanged.listen((WebViewStateChanged state) {
-        if (state.type == WebViewState.finishLoad) {
-          webviewReference.show();
-        }
-      });
-    }
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _WebViewState();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _resizeTimer?.cancel();
-    webviewReference.close();
-    if (widget.hidden) {
-      _onStateChanged.cancel();
-    }
-    webviewReference.dispose();
-  }
+
+  const AJWebview({
+    Key key,
+    this.initialUrl,
+    this.onWebViewCreated,
+    this.javascriptMode = JavascriptMode.unrestricted,
+    this.gestureRecognizers,
+    this.withLocalUrl = false,
+  }) : assert(javascriptMode != null), super(key: key);
+
+  final WebViewCreatedCallback onWebViewCreated;
+  final JavascriptMode javascriptMode;
+  final String initialUrl;
+  ///手势  web视图应该使用哪些手势
+  ///如果web视图在[ListView]中，[ListView]将需要处理垂直拖
+  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
+  final bool withLocalUrl;
+
+}
+class _WebViewState extends State<AJWebview> {
+  final Completer<WebViewController> _controller =
+  Completer<WebViewController>();
+  
+  _WebSettings _settings;
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.appBar,
-      persistentFooterButtons: widget.persistentFooterButtons,
-      bottomNavigationBar: widget.bottomNavigationBar,
-      body: _WebviewPlaceholder(
-        onRectChanged: (Rect value) {
-          if (_rect == null) {
-            _rect = value;
-            webviewReference.launch(
-              widget.url,
-              headers: widget.headers,
-              withJavascript: widget.withJavascript,
-              clearCache: widget.clearCache,
-              clearCookies: widget.clearCookies,
-              enableAppScheme: widget.enableAppScheme,
-              userAgent: widget.userAgent,
-              rect: _rect,
-              withZoom: widget.withZoom,
-              withLocalStorage: widget.withLocalStorage,
-              withLocalUrl: widget.withLocalUrl,
-              scrollBar: widget.scrollBar,
-              supportMultipleWindows: widget.supportMultipleWindows,
-              appCacheEnabled: widget.appCacheEnabled,
-              allowFileURLs: widget.allowFileURLs,
-            );
-          } else {
-            if (_rect != value) {
-              _rect = value;
-              _resizeTimer?.cancel();
-              _resizeTimer = Timer(const Duration(milliseconds: 250), () {
-                // avoid resizing to fast when build is called multiple time
-                webviewReference.resize(_rect);
-              });
-            }
-          }
-        },
-        child: widget.initialChild ?? const Center(child: const CircularProgressIndicator()),
-      ),
-    );
+    if(defaultTargetPlatform == TargetPlatform.android){
+
+      return GestureDetector(
+        onLongPress: () {},
+        child: AndroidView(
+          viewType: 'aj_flutter_webview',
+          onPlatformViewCreated: _onPlatformViewCreated,
+          gestureRecognizers: widget.gestureRecognizers,
+          layoutDirection: TextDirection.rtl,
+          creationParams: _CreationParams.fromWidget(widget).toMap(),
+          creationParamsCodec: const StandardMessageCodec(),
+        ),
+      );
+
+    } else if(defaultTargetPlatform == TargetPlatform.iOS){
+      
+      return UiKitView(
+        viewType: "aj_flutter_webview",
+        onPlatformViewCreated: _onPlatformViewCreated,
+        gestureRecognizers: widget.gestureRecognizers,
+        creationParams: _CreationParams.fromWidget(widget).toMap(),
+        creationParamsCodec: const StandardMessageCodec(),//消息格式
+      );
+    }
+    return Text(
+        '$defaultTargetPlatform is not yet supported by the aj_flutter_webview plugin');
+  }
+  
+  @override
+  void didUpdateWidget(AJWebview oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _updateSettings(_WebSettings.fromWidget(widget));
+  }
+
+  Future<void> _updateSettings(_WebSettings settings) async {
+    _settings = settings;
+    final WebViewController controller = await _controller.future;
+    controller._updateSettings(settings);
+  }
+
+  void _onPlatformViewCreated(int id){
+    final WebViewController controller = WebViewController._(id, _WebSettings.fromWidget(widget));
+    _controller.complete(controller);
+    if(widget.onWebViewCreated != null){
+      widget.onWebViewCreated(controller);
+    }
   }
 }
 
-class _WebviewPlaceholder extends SingleChildRenderObjectWidget {
-  const _WebviewPlaceholder({
-    Key key,
-    @required this.onRectChanged,
-    Widget child,
-  }) : super(key: key, child: child);
+class _CreationParams {
+  _CreationParams({this.initialUrl, this.settings, this.withLocalUrl});
+  static _CreationParams fromWidget(AJWebview widget){
+    return _CreationParams(
+      initialUrl: widget.initialUrl,
+      settings: _WebSettings.fromWidget(widget),
+      withLocalUrl: widget.withLocalUrl,
 
-  final ValueChanged<Rect> onRectChanged;
-
-  @override
-  RenderObject createRenderObject(BuildContext context) {
-    return _WebviewPlaceholderRender(
-      onRectChanged: onRectChanged,
     );
   }
+  final String initialUrl;
+  final _WebSettings settings;
+  final bool withLocalUrl;
 
-  @override
-  void updateRenderObject(BuildContext context, _WebviewPlaceholderRender renderObject) {
-    renderObject..onRectChanged = onRectChanged;
+  Map<String, dynamic> toMap() {
+    print(withLocalUrl);
+    return <String, dynamic>{
+      'initialUrl': initialUrl,
+      'settings': settings.toMap(),
+      'withLocalUrl': withLocalUrl
+    };
   }
 }
 
-class _WebviewPlaceholderRender extends RenderProxyBox {
-  _WebviewPlaceholderRender({
-    RenderBox child,
-    ValueChanged<Rect> onRectChanged,
-  })  : _callback = onRectChanged,
-        super(child);
 
-  ValueChanged<Rect> _callback;
-  Rect _rect;
+class WebViewController {
+  WebViewController._(int id, _WebSettings settings){
+    _channel = MethodChannel('aj_flutter_webview_$id');
+    _settings = settings;
+    _channel.setMethodCallHandler(_handleMessages);
+  }
+   MethodChannel _channel;
+  _WebSettings _settings;
 
-  Rect get rect => _rect;
+  final _onUrlChanged = StreamController<String>.broadcast();
+  final _onStateChanged = StreamController<WebViewStateChanged>.broadcast();
+  final _onHttpError = StreamController<WebViewHttpError>.broadcast();
 
-  set onRectChanged(ValueChanged<Rect> callback) {
-    if (callback != _callback) {
-      _callback = callback;
-      notifyRect();
+
+  Future<Null> _handleMessages(MethodCall call) async {
+    switch (call.method) {
+      case 'onUrlChanged':
+        _onUrlChanged.add(call.arguments['url']);
+        break;
+      case 'onState':
+        _onStateChanged.add(WebViewStateChanged.fromMap(Map<String, dynamic>.from(call.arguments)));
+      break;
+      case 'onHttpError':
+      _onHttpError.add(WebViewHttpError(call.arguments['code'], call.arguments['url']));
+      break;
     }
   }
 
-  void notifyRect() {
-    if (_callback != null && _rect != null) {
-      _callback(_rect);
+  //url改变通知
+  Stream<String> get onUrlChanged => _onUrlChanged.stream;
+
+  //请求状态改变
+  Stream<WebViewStateChanged> get onStateChanged => _onStateChanged.stream;
+
+  //请求错误通知
+  Stream<WebViewHttpError> get onHttpError => _onHttpError.stream;
+
+
+  Future<void> _updateSettings(_WebSettings setting) async {
+    final Map<String, dynamic> updateMap = _settings.updatesMap(setting);
+    if (updateMap == null) {
+      return null;
     }
+    _settings = setting;
+    return _channel.invokeMethod('updateSettings', updateMap);
   }
 
-  @override
-  void paint(PaintingContext context, Offset offset) {
-    super.paint(context, offset);
-    final rect = offset & size;
-    if (_rect != rect) {
-      _rect = rect;
-      notifyRect();
-    }
+
+  Future<void> loadUrl(String url) async {
+    assert(url != null);
+    _validateUrlString(url);
+    return _channel.invokeMethod('loadUrl', url);
   }
+
+  Future<void> loadLoacalUrl(String url) async {
+    return _channel.invokeMethod('loadLoacalUrl', url);
+  }
+
+  Future<String> currentUrl() async {
+    final String url = await _channel.invokeMethod('currentUrl');
+    return url;
+  }
+
+  Future<bool> canGoBack() async {
+    final bool canGoBack = await _channel.invokeMethod("canGoBack");
+    return canGoBack;
+  }
+
+  Future<bool> canGoForward() async {
+    final bool canGoForward = await _channel.invokeMethod("canGoForward");
+    return canGoForward;
+  }
+
+  Future<void> goBack() async {
+    return _channel.invokeMethod("goBack");
+  }
+
+  Future<void> goForward() async {
+    return _channel.invokeMethod("goForward");
+  }
+
+  Future<void> reload() async {
+    return _channel.invokeMethod("reload");
+  }
+
+  Future<String> evaluateJavascript(String javascriptString) async {
+    if (_settings.javascriptMode == JavascriptMode.disabled) {
+      throw FlutterError(
+          'JavaScript mode must be enabled/unrestricted when calling evaluateJavascript.');
+    }
+    if (javascriptString == null) {
+      throw ArgumentError('The argument javascriptString must not be null. ');
+    }
+    final String result =
+    await _channel.invokeMethod('evaluateJavascript', javascriptString);
+    return result;
+  }
+}
+
+
+class _WebSettings {
+  _WebSettings({
+    this.javascriptMode
+  });
+  static _WebSettings fromWidget(AJWebview widget){
+    return _WebSettings(javascriptMode: widget.javascriptMode);
+  }
+  final JavascriptMode javascriptMode;
+
+  Map<String, dynamic> toMap(){
+    return <String, dynamic>{
+    'jsMode': javascriptMode.index,
+    };
+  }
+
+  Map<String, dynamic> updatesMap(_WebSettings newSettings){
+    if(javascriptMode == newSettings.javascriptMode){
+      return null;
+    }
+    return <String, dynamic>{
+      'jsMode': newSettings.javascriptMode.index,
+    };
+  }
+
+}
+
+void _validateUrlString(String url) {
+  try {
+    final Uri uri = Uri.parse(url);
+    if (uri.scheme.isEmpty) {
+      throw ArgumentError('Missing scheme in URL string: "$url"');
+    }
+  } on FormatException catch (e) {
+    throw ArgumentError(e);
+  }
+}
+
+
+enum WebViewState { shouldStart, startLoad, finishLoad, loadFaild}
+
+//加载类型
+class WebViewStateChanged {
+  WebViewStateChanged(this.type, this.url, this.navigationType);
+  factory WebViewStateChanged.fromMap(Map<String, dynamic> map) {
+    WebViewState t;
+    switch (map['type']) {
+      case 'shouldStart':
+        t = WebViewState.shouldStart;
+        break;
+      case 'startLoad':
+        t = WebViewState.startLoad;
+        break;
+      case 'finishLoad':
+        t = WebViewState.finishLoad;
+        break;
+      case 'loadFaild':
+        t = WebViewState.loadFaild;
+        break;
+    }
+    return WebViewStateChanged(t, map['url'], map['navigationType']);
+  }
+
+  final WebViewState type;
+  final String url;
+  final int navigationType;
+}
+
+
+//错误类型
+class WebViewHttpError {
+  WebViewHttpError(this.code, this.url);
+
+  final String url;
+  final String code;
 }
