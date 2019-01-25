@@ -36,6 +36,9 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
     }
 
+    WebSettings settings = webView.getSettings();
+    settings.setDomStorageEnabled(true);
+
     applySettings((Map<String, Object>) params.get("settings"));
     methodChannel = new MethodChannel(messenger, "aj_flutter_webview_" + id);
     methodChannel.setMethodCallHandler(this);
