@@ -2,7 +2,9 @@ package com.plus.anji.ajflutterwebview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -27,7 +29,13 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       String url = (String) params.get("initialUrl");
       webView.loadUrl(url);
     }
+
     webView.setWebViewClient(webViewClient);
+    //版本号 > 21
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+    }
+
     applySettings((Map<String, Object>) params.get("settings"));
     methodChannel = new MethodChannel(messenger, "aj_flutter_webview_" + id);
     methodChannel.setMethodCallHandler(this);
