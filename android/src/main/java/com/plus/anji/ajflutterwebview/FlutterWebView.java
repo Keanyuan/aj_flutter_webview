@@ -3,10 +3,13 @@ package com.plus.anji.ajflutterwebview;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import java.io.File;
+
 
 import java.util.Map;
 
@@ -17,6 +20,10 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.platform.PlatformView;
 
+import static android.content.ContentValues.TAG;
+import static android.database.sqlite.SQLiteDatabase.deleteDatabase;
+import static io.flutter.util.PathUtils.getFilesDir;
+
 public class FlutterWebView implements PlatformView, MethodCallHandler {
   private final WebView webView;
   static MethodChannel methodChannel;
@@ -24,12 +31,22 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
   @SuppressWarnings("unchecked")
   FlutterWebView(Context context, BinaryMessenger messenger, int id, Map<String, Object> params) {
     webView = new WebView(context);
-    WebViewClient webViewClient = new BrowserClient();
+    buildWebView(context);
+
     if (params.containsKey("initialUrl")) {
       String url = (String) params.get("initialUrl");
       webView.loadUrl(url);
     }
 
+
+    applySettings((Map<String, Object>) params.get("settings"));
+    methodChannel = new MethodChannel(messenger, "aj_flutter_webview_" + id);
+    methodChannel.setMethodCallHandler(this);
+  }
+
+
+  private void buildWebView(Context context){
+    WebViewClient webViewClient = new BrowserClient();
     webView.setWebViewClient(webViewClient);
     //版本号 > 21
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -38,10 +55,21 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
 
     WebSettings settings = webView.getSettings();
     settings.setDomStorageEnabled(true);
+    settings.setBuiltInZoomControls(true);
+    settings.setJavaScriptCanOpenWindowsAutomatically(true);
+    settings.setSupportMultipleWindows(true);
+    //开启 database storage API 功能
+    settings.setAppCacheEnabled(true);
+    // 开启 DOM storage API 功能
+    settings.setDomStorageEnabled(true);
+    String cacheDirPath = context.getFilesDir().getAbsolutePath()+"/webcache";
+    //设置数据库缓存路径
+    settings.setDatabasePath(cacheDirPath);
+    //设置  Application Caches 缓存目录
+    settings.setAppCachePath(cacheDirPath);
+    //开启 Application Caches 功能
+    settings.setAppCacheEnabled(true);
 
-    applySettings((Map<String, Object>) params.get("settings"));
-    methodChannel = new MethodChannel(messenger, "aj_flutter_webview_" + id);
-    methodChannel.setMethodCallHandler(this);
   }
 
   @Override
