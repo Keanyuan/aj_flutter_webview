@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -42,12 +44,16 @@ class _MyAppState extends State<MyApp> {
   //调用对应方法
   _getPlatformVersion() async {
     String localHtmlData;
+
     try {
       //invoke Method 获取定义调用方法名
-      final localHtml = await platform.invokeMethod( 'getLocalHtml' );
-      print(localHtml);
+      if(Platform.isIOS){
+        final localHtml = await platform.invokeMethod( 'getLocalHtml' );
+        print(localHtml);
 
-      localHtmlData = '$localHtml';
+        localHtmlData = '$localHtml';
+      }
+
     } on PlatformException catch (e) {
       print( "错误 $e" );
     }
