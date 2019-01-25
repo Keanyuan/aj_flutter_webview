@@ -117,7 +117,6 @@ class _CreationParams {
   final bool withLocalUrl;
 
   Map<String, dynamic> toMap() {
-    print(withLocalUrl);
     return <String, dynamic>{
       'initialUrl': initialUrl,
       'settings': settings.toMap(),
