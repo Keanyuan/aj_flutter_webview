@@ -4,11 +4,5 @@ A new Flutter plugin.
 
 ## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.io/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+结合flutter_webview_plugin和webview_flutter重写的weview插件，
+iOS开发的话需要在info.plist中添加 io.flutter.embedded_views_preview 为 true 方可使用。
