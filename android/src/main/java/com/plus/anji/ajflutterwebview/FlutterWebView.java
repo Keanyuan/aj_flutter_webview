@@ -24,6 +24,7 @@ import static android.content.ContentValues.TAG;
 import static android.database.sqlite.SQLiteDatabase.deleteDatabase;
 import static io.flutter.util.PathUtils.getFilesDir;
 
+@TargetApi(23)
 public class FlutterWebView implements PlatformView, MethodCallHandler {
   private final WebView webView;
   static MethodChannel methodChannel;
@@ -62,11 +63,11 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     settings.setAppCacheEnabled(true);
     // 开启 DOM storage API 功能
     settings.setDomStorageEnabled(true);
-    String cacheDirPath = context.getFilesDir().getAbsolutePath()+"/webcache";
+//    String cacheDirPath = context.getFilesDir().getAbsolutePath()+"/webcache";
     //设置数据库缓存路径
-    settings.setDatabasePath(cacheDirPath);
+//    settings.setDatabasePath(cacheDirPath);
     //设置  Application Caches 缓存目录
-    settings.setAppCachePath(cacheDirPath);
+//    settings.setAppCachePath(cacheDirPath);
     //开启 Application Caches 功能
     settings.setAppCacheEnabled(true);
 
