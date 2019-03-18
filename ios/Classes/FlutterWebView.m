@@ -282,6 +282,7 @@
 // 页面加载完成之后调用
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     [_channel invokeMethod:@"onState" arguments:@{@"type": @"finishLoad", @"url": webView.URL.absoluteString}];
+    [_channel invokeMethod:@"onTitleChange" arguments:@{@"title": webView.title}];
 }
 
 

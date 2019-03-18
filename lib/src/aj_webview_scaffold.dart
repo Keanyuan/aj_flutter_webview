@@ -136,6 +136,7 @@ class WebViewController {
   _WebSettings _settings;
 
   final _onUrlChanged = StreamController<String>.broadcast();
+  final _onTitleChange = StreamController<String>.broadcast();
   final _onStateChanged = StreamController<WebViewStateChanged>.broadcast();
   final _onHttpError = StreamController<WebViewHttpError>.broadcast();
 
@@ -148,6 +149,9 @@ class WebViewController {
       case 'onState':
         _onStateChanged.add(WebViewStateChanged.fromMap(Map<String, dynamic>.from(call.arguments)));
       break;
+      case 'onTitleChange':
+        _onTitleChange.add(call.arguments['title']);
+        break;
       case 'onHttpError':
       _onHttpError.add(WebViewHttpError(call.arguments['code'], call.arguments['url']));
       break;
@@ -156,6 +160,9 @@ class WebViewController {
 
   //url改变通知
   Stream<String> get onUrlChanged => _onUrlChanged.stream;
+
+  Stream<String> get onTitleChange => _onTitleChange.stream;
+
 
   //请求状态改变
   Stream<WebViewStateChanged> get onStateChanged => _onStateChanged.stream;
@@ -216,6 +223,7 @@ class WebViewController {
     _onUrlChanged.close();
     _onStateChanged.close();
     _onHttpError.close();
+    _onTitleChange.close();
   }
 
 

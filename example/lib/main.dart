@@ -37,6 +37,10 @@ class _MyAppState extends State<MyApp> {
       print(url);
     });
 
+    controller.onTitleChange.listen((title){
+      print(title);
+    });
+
   });
 
   }
