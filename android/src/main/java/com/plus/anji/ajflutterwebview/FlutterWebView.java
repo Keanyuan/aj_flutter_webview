@@ -55,8 +55,10 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     }
 
     WebSettings settings = webView.getSettings();
+    settings.setBuiltInZoomControls(false);
+    settings.setSupportZoom(false);
+    settings.setDisplayZoomControls(false);
     settings.setDomStorageEnabled(true);
-    settings.setBuiltInZoomControls(true);
     settings.setJavaScriptCanOpenWindowsAutomatically(true);
     settings.setSupportMultipleWindows(true);
     //开启 database storage API 功能
