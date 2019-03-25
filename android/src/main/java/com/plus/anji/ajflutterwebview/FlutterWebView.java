@@ -55,8 +55,8 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     }
 
     WebSettings settings = webView.getSettings();
-    settings.setBuiltInZoomControls(false);
-    settings.setSupportZoom(true);
+//    settings.setBuiltInZoomControls(true);
+//    settings.setSupportZoom(true);
     settings.setDisplayZoomControls(false);
     settings.setDomStorageEnabled(true);
     settings.setJavaScriptCanOpenWindowsAutomatically(true);
